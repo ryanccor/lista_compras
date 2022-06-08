@@ -6,6 +6,8 @@ import 'package:lista_compras/paginas/pagina_tipo_produto.dart';
 import 'package:lista_compras/paginas/pagina_entidade.dart';
 import 'package:lista_compras/entidades/entidade.dart';
 
+import 'navegacao.dart';
+
 class PaginaCadastroTipoProduto extends StatefulWidget{
   const PaginaCadastroTipoProduto({Key? key}) : super(key: key);
 
@@ -16,7 +18,8 @@ class PaginaCadastroTipoProduto extends StatefulWidget{
 class _PaginaCadastroTipoProdutoState extends State<PaginaCadastroTipoProduto> with PaginaCadastro {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return criarPagina(context,
+        'Tipo de Produto');
   }
 
   @override
@@ -60,10 +63,54 @@ class _PaginaCadastroTipoProdutoState extends State<PaginaCadastroTipoProduto> w
     controleCadastro.finalizar();
     super.dispose();
   }
-
+  Widget _criarItemGaveta(int indicePagina,
+      IconData icone,
+      String titulo,
+      String pagina) {
+    return ListTile(
+      leading: Icon(
+        icone,
+        color: Colors.black,
+        size: 25,
+      ),
+      title: Text(
+        titulo,
+        style: TextStyle(fontWeight: FontWeight.bold,
+            fontSize: 18),
+      ),
+      onTap: () {
+        // blocInterfacePrincipal.eventoAba.add(indicePagina);
+        // scaffoldKey.currentState.openEndDrawer();
+        Navigator.pushNamed(context, pagina);
+      },
+    );
+  }
   @override
   Widget criarGaveta() {
-    // TODO: implement criarGaveta
-    throw UnimplementedError();
+
+      // TODO: implement criarGaveta
+      return
+        Drawer(
+          child: Container(
+            color: Colors.white,
+            child: ListView(
+              padding: EdgeInsets.all(0.0),
+              children: <Widget>[
+                SafeArea(
+                  child: Container(),
+                ),
+                _criarItemGaveta(1,
+                    Icons.apps,
+                    'Tipos de Produtos',
+
+                    Navegacao.tipoProduto),
+                _criarItemGaveta(2,
+                    Icons.home,
+                    'Principal',
+                    Navegacao.principal),
+              ],
+            ),
+          ),
+        );
   }
 }

@@ -10,7 +10,7 @@ class TipoProduto extends Entidade {
 
   TipoProduto.criarDeMapa(Map<String,dynamic> mapaEntidade) :
         super.criarDeMapa(mapaEntidade){
-    identificador = mapaEntidade[DicionarioDados.idTipoProduto];
+    identificador = mapaEntidade[DicionarioDados.idTipoProduto] ?? 0;
     nome = mapaEntidade[DicionarioDados.nome];
   }
 
@@ -32,4 +32,5 @@ class TipoProduto extends Entidade {
     }
     return valores;
   }
+
 }

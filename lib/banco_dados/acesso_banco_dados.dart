@@ -6,27 +6,35 @@ import 'dicionario_dados.dart';
 
 class AcessoBancoDados{
 
-  static late AcessoBancoDados _acessoBancoDados;
-  late Database _bancoDados;
+  static AcessoBancoDados? _acessoBancoDados;
+  Database? _bancoDados;
 
   AcessoBancoDados._criarInstancia();
 
   factory AcessoBancoDados(){
     _acessoBancoDados ??= AcessoBancoDados._criarInstancia();
-    return _acessoBancoDados;
+    return _acessoBancoDados!;
+  }
+
+  // unknown porque eu não sei o que é o terceiro parametro
+  Future<void> _recriarTabelas(Database bancoDados, int versao, int unknown) async{
+    await bancoDados.execute('DROP TABLE IF EXISTS '
+        '${DicionarioDados.tabelaTipoProduto} '
+    );
+    await _criarTabelas (bancoDados, versao);
   }
 
   Future<void> _criarTabelas (Database bancoDados, int versao) async {
     // Criação das tabelas de tipos de produto
-    await bancoDados.execute('CREATE TABLE '
+    await bancoDados.execute('CREATE TABLE IF NOT EXISTS '
         '${DicionarioDados.tabelaTipoProduto} ('
-        '${DicionarioDados.idProduto} INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
+        '${DicionarioDados.idTipoProduto} INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
         ' ${DicionarioDados.nome} TEXT NOT NULL'
         ')'
     );
 
     // Criação da tabela de produtos
-    await bancoDados.execute('CREATE TABLE ${DicionarioDados.tabelaProduto} ('
+    await bancoDados.execute('CREATE TABLE IF NOT EXISTS ${DicionarioDados.tabelaProduto} ('
         '${DicionarioDados.idProduto} INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
         '${DicionarioDados.idTipoProduto} INTEGER NOT NULL,'
         '${DicionarioDados.nome} TEXT NOT NULL,'
@@ -38,7 +46,7 @@ class AcessoBancoDados{
     );
 
     //Criaçao da tabela de itens das listas
-    await bancoDados.execute('CREATE TABLE ${DicionarioDados.tabelaItemListaCompra} ('
+    await bancoDados.execute('CREATE TABLE IF NOT EXISTS ${DicionarioDados.tabelaItemListaCompra} ('
         ' ${DicionarioDados.idListaCompra} INTEGER NOT NULL,'
         ' ${DicionarioDados.numeroItem} INTEGER NOT NULL,'
         ' ${DicionarioDados.idProduto} INTEGER NOT NULL,'
@@ -55,24 +63,37 @@ class AcessoBancoDados{
           ' ON DELETE CASCADE '
         ')'
     );
+
+    //Criação da tabela de listas de compras
+    await bancoDados.execute("""
+        CREATE TABLE IF NOT EXISTS
+          ${DicionarioDados.tabelaListaCompra} (
+           ${DicionarioDados.idListaCompra} INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+           ${DicionarioDados.nome} TEXT NOT NULL
+        )
+        """);
+
   }
 
   Future<Database> _abrirBancoDados() async {
     Directory diretorio = await getApplicationDocumentsDirectory();
     String caminhoBancoDados = diretorio.path + DicionarioDados.arquivoBancoDados;
 
-    var bancoDados = await openDatabase(caminhoBancoDados, version: 1, onCreate: _criarTabelas);
+    var bancoDados = await openDatabase(caminhoBancoDados, version: 3, onCreate: _criarTabelas, onUpgrade: _recriarTabelas);
 
     return bancoDados;
   }
 
   void fechar(){
-    _bancoDados.close();
+    if(_bancoDados ==  null){
+      return;
+    }
+    _bancoDados!.close();
   }
 
   Future<Database> get bancoDados async {
     _bancoDados ??= await _abrirBancoDados();
 
-    return _bancoDados;
+    return _bancoDados!;
   }
 }

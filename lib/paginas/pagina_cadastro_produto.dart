@@ -6,6 +6,7 @@ import 'package:lista_compras/paginas/pagina_produto.dart';
 import '../controles/controle_cadastro_produto.dart';
 import '../entidades/entidade.dart';
 import '../entidades/produto.dart';
+import 'navegacao.dart';
 
 class PaginaCadastroProduto extends StatefulWidget {
   const PaginaCadastroProduto({Key? key}) : super(key: key);
@@ -70,10 +71,56 @@ class _PaginaCadastroProdutoState
     return criarPagina(contexto,'Produtos');
   }
 
+
+  Widget _criarItemGaveta(int indicePagina,
+      IconData icone,
+      String titulo,
+      String pagina) {
+    return ListTile(
+      leading: Icon(
+        icone,
+        color: Colors.black,
+        size: 25,
+      ),
+      title: Text(
+        titulo,
+        style: TextStyle(fontWeight: FontWeight.bold,
+            fontSize: 18),
+      ),
+      onTap: () {
+        // blocInterfacePrincipal.eventoAba.add(indicePagina);
+        // scaffoldKey.currentState.openEndDrawer();
+        Navigator.pushNamed(context, pagina);
+      },
+    );
+  }
+
   @override
   Widget criarGaveta() {
     // TODO: implement criarGaveta
-    throw UnimplementedError();
+    return
+      Drawer(
+        child: Container(
+          color: Colors.white,
+          child: ListView(
+            padding: EdgeInsets.all(0.0),
+            children: <Widget>[
+              SafeArea(
+                child: Container(),
+              ),
+              _criarItemGaveta(1,
+                  Icons.apps,
+                  'Tipos de Produtos',
+
+                  Navegacao.tipoProduto),
+              _criarItemGaveta(2,
+                  Icons.shopping_cart,
+                  'Produtos',
+                  Navegacao.produto),
+            ],
+          ),
+        ),
+      );
   }
 
 }

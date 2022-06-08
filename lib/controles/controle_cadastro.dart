@@ -69,7 +69,7 @@ abstract class ControleCadastro {
 
   Future<List<Entidade>> selecionarTodos () async {
     Database? bancoDados = await AcessoBancoDados().bancoDados;
-    var resultado = await bancoDados!.query(tabela);
+    var resultado = await bancoDados.query(tabela);
     List<Entidade> entidades = await criarListaEntidades(resultado);
     return entidades;
   }

@@ -8,6 +8,7 @@ class PaginaTipoProduto extends StatefulWidget with PaginaEntidade{
     required entidade}){
     this.operacaoCadastro = operacaoCadastro;
     this.entidade = entidade;
+    print("PaginaTipoProduto");
   }
   @override
   _PaginaTipoProdutoState createState() =>
@@ -20,6 +21,7 @@ class _PaginaTipoProdutoState extends State<PaginaTipoProduto> with EstadoPagina
   @override
   List<Widget> criarConteudoFormulario(BuildContext
   contexto){
+    print("_PaginaTipoProdutoState");
     return [TextField(
       controller: _controladorNome,
       decoration: const InputDecoration(
@@ -52,6 +54,7 @@ class _PaginaTipoProdutoState extends State<PaginaTipoProduto> with EstadoPagina
   @override
   void initState() {
     super.initState();
+    print("_PaginaTipoProdutoState");
     if (widget.operacaoCadastro == OperacaoCadastro.edicao) {
       _controladorNome.text = (widget.entidade as TipoProduto).nome;
     }
@@ -65,6 +68,7 @@ class _PaginaTipoProdutoState extends State<PaginaTipoProduto> with EstadoPagina
 
   @override
   Widget build(BuildContext context) {
+    print("_PaginaTipoProdutoState");
     return criarPagina(context,
         widget.operacaoCadastro,
         'Tipo de Produto');
