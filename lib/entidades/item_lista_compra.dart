@@ -34,6 +34,7 @@ class ItemListaCompra extends Entidade {
     selecionado = mapaEntidade[DicionarioDados.selecionado] == 'S'
         ? true
         : false;
+
   }
 
   @override
@@ -50,5 +51,10 @@ class ItemListaCompra extends Entidade {
       DicionarioDados.quantidade : quantidade,
       DicionarioDados.selecionado : selecionado ? 'S' : 'N',
     };
+  }
+
+  @override
+  String toString(){
+    return """{identificador:${identificador}}""";
   }
 }

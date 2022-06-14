@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lista_compras/controles/controle_cadastro_item_lista_compra.dart';
+import 'package:lista_compras/entidades/item_lista_compra.dart';
 import 'package:lista_compras/paginas/mensagem.dart';
 import 'package:lista_compras/paginas/pagina_entidade.dart';
+import 'package:lista_compras/paginas/pagina_selecao_produtos.dart';
 
 import '../entidades/entidade.dart';
 import '../entidades/lista_compra.dart';
@@ -23,6 +26,7 @@ class _PaginaListaCompraState extends State<PaginaListaCompra>
     with EstadoPaginaEntidade, ListaProdutos {
 
   final _controladorNome = TextEditingController();
+  final _controleItemLista =  ControleCadastroItemListaCompra();
   List<Entidade> _itens = <Entidade>[];
 
   @override
@@ -32,6 +36,7 @@ class _PaginaListaCompraState extends State<PaginaListaCompra>
     controleCadastroTipoProduto.emitirLista();
     if (widget.operacaoCadastro == OperacaoCadastro.edicao) {
       _controladorNome.text = (widget.entidade as ListaCompra).nome;
+
       selecionarProdutos(0);
     }
   }
@@ -40,6 +45,7 @@ class _PaginaListaCompraState extends State<PaginaListaCompra>
   void dispose(){
     controleCadastroTipoProduto.finalizar();
     controleCadastroProduto.finalizar();
+   _controleItemLista.finalizar();
     _controladorNome.dispose();
     super.dispose();
   }
@@ -62,13 +68,26 @@ class _PaginaListaCompraState extends State<PaginaListaCompra>
   void transferirDadosParaEntidade(){
     ListaCompra listaCompra = widget.entidade as ListaCompra;
     listaCompra.nome = _controladorNome.text;
+    for(ItemListaCompra  item in  listaCompra.itens){
+      item.quantidade =  item.produto.quantidade;
+    }
     // Os itens foram inseridos a partir da página de
     // seleção de produtos.
   }
 
   @override
   void selecionarProdutos(int idTipoProduto) async {
+
     ListaCompra listaCompra = widget.entidade as ListaCompra;
+    print("selecionando produtos da lista ${listaCompra.identificador }");
+    print("lista vazia ${listaCompra.itens.isEmpty}");
+    print("itens: ${listaCompra.itens}");
+    if(listaCompra.identificador > 0){
+      List<Entidade> itens = await _controleItemLista.selecionarDaListaCompra(listaCompra.identificador);
+      for(Entidade item in itens) {
+        listaCompra.incluirItem(item as ItemListaCompra);
+      }
+    }
     produtos =
         listaCompra.retornarProdutosPorTipo(idTipoProduto);
     estadoPagina.setState(() {
@@ -78,7 +97,7 @@ class _PaginaListaCompraState extends State<PaginaListaCompra>
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return criarPagina(context, widget.operacaoCadastro, "Lista de Compras");
   }
 
   @override
@@ -90,6 +109,24 @@ class _PaginaListaCompraState extends State<PaginaListaCompra>
         labelText: 'Nome',
       ),
     ),
+      Container(
+        color: Colors.grey,
+        margin: EdgeInsets.fromLTRB(0, 16, 0, 16),
+        child: Column(
+
+          children: [
+            Container(height: 50, child: criarListaTiposProdutos(true)),
+            Container(child: criarListaProdutos()),
+            ElevatedButton(onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context){
+                return PaginaSelecaoProdutos(entidade: widget.entidade, operacaoCadastro: OperacaoCadastro.selecao,);
+              })).then((value) => setState(() {selecionarProdutos(0);}));
+            }, child: Icon(Icons.add))
+          ],
+        ),
+      ),
+
     ];
   }
 }
+

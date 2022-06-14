@@ -43,7 +43,11 @@ mixin ListaProdutos {
         stream: controleCadastroTipoProduto.fluxo,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            tiposProdutos = snapshot.data as List<TipoProduto>;
+            List<TipoProduto> convertidos = [];
+            for (Entidade entidade in snapshot.data as List<Entidade>) {
+              convertidos.add(entidade as TipoProduto);
+            }
+            tiposProdutos = convertidos;
             if (incluiOpcaoTodos) {
               tiposProdutos.add(TipoProduto(idTipoProduto: 0, nome: 'Todos'));
             }
@@ -93,11 +97,16 @@ mixin ListaProdutos {
   }
 
   Widget criarListaProdutos() {
-    return ListView.builder(
-        padding: EdgeInsets.all(5.0),
-        itemCount: produtos.length,
-        itemBuilder: (context, index) {
-          return criarItemListaProduto(context, index);
-        });
+    return Column(
+      children: [
+        ListView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.all(5.0),
+            itemCount: produtos.length,
+            itemBuilder: (context, index) {
+              return criarItemListaProduto(context, index);
+            }),
+      ],
+    );
   }
 }

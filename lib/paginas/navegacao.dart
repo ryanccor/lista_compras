@@ -48,29 +48,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal>
 
   @override
   Widget criarGaveta(){
-    return
-      Drawer(
-        child: Container(
-          color: Colors.white,
-          child: ListView(
-            padding: EdgeInsets.all(0.0),
-            children: <Widget>[
-              SafeArea(
-                child: Container(),
-              ),
-              _criarItemGaveta(1,
-                  Icons.apps,
-                  'Tipos de Produtos',
-
-                  Navegacao.tipoProduto),
-              _criarItemGaveta(2,
-                  Icons.shopping_cart,
-                  'Produtos',
-                  Navegacao.produto),
-            ],
-          ),
-        ),
-      );
+    return criarGavetaGenerica(Navegacao.principal, _criarItemGaveta);
   }
 
   @override
@@ -114,4 +92,49 @@ class _PaginaPrincipalState extends State<PaginaPrincipal>
       SizedBox(height: 50,),
     ];
   }
+}
+
+Widget criarGavetaGenerica(String excludePath, Widget Function(int indice, IconData icone, String nome, String caminho) _criarItemGaveta){
+  var paths = [Navegacao.principal, Navegacao.produto, Navegacao.tipoProduto];
+  Map<String, Map<String, dynamic>> pathData= {
+    Navegacao.principal:{
+      "title":"Principal",
+      "icon":Icons.home,
+    },
+    Navegacao.produto:{
+      "title":"Produtos",
+      "icon":Icons.shopping_cart,
+    },
+    Navegacao.tipoProduto:{
+      "title":'Tipos de Produtos',
+      "icon":Icons.apps,
+    },
+  };
+
+
+  List<Widget> drawerItems = [
+    SafeArea(
+      child: Container(),
+    ),
+  ];
+  for(int i  =0;i<paths.length; i++){
+    String path =paths[i];
+    if(path == excludePath){
+      continue;
+    }
+    drawerItems.add(_criarItemGaveta(i+1,
+        pathData[path]!["icon"],
+        pathData[path]!["title"],
+        path));
+  }
+  return
+    Drawer(
+      child: Container(
+        color: Colors.white,
+        child: ListView(
+          padding: EdgeInsets.all(0.0),
+          children: drawerItems,
+        ),
+      ),
+    );
 }

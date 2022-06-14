@@ -98,29 +98,7 @@ class _PaginaCadastroProdutoState
   @override
   Widget criarGaveta() {
     // TODO: implement criarGaveta
-    return
-      Drawer(
-        child: Container(
-          color: Colors.white,
-          child: ListView(
-            padding: EdgeInsets.all(0.0),
-            children: <Widget>[
-              SafeArea(
-                child: Container(),
-              ),
-              _criarItemGaveta(1,
-                  Icons.apps,
-                  'Tipos de Produtos',
-
-                  Navegacao.tipoProduto),
-              _criarItemGaveta(2,
-                  Icons.shopping_cart,
-                  'Produtos',
-                  Navegacao.produto),
-            ],
-          ),
-        ),
-      );
+    return criarGavetaGenerica(Navegacao.produto, _criarItemGaveta);
   }
 
 }

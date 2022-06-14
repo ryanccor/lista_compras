@@ -31,7 +31,7 @@ class ControleCadastroItemListaCompra extends ControleCadastro{
     List<Map> mapaEntidades = await bancoDados.query(
         tabela,
         where: '${DicionarioDados.idListaCompra} = ? ',
-        whereArgs: [idListaCompra]);
+        whereArgs: [idListaCompra], );
     List<Entidade> entidades = await
     criarListaEntidades(mapaEntidades);
     return entidades;

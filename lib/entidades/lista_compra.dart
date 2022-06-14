@@ -4,11 +4,11 @@ import 'package:lista_compras/entidades/item_lista_compra.dart';
 import 'package:lista_compras/entidades/produto.dart';
 
 class ListaCompra extends Entidade{
-  static const primeiroNumeroItem = 1;
+  static const primeiroNumeroItem = 0;
   int _numeroItem = primeiroNumeroItem;
   String nome = '';
   //Facilita a localização de um item
-  final _itens = <ItemListaCompra>[];
+  final Map<int, ItemListaCompra> _itens = {};
   ListaCompra({int idCompra = 0,
     this.nome = ''}) : super(idCompra);
   ListaCompra.criarDeMapa(Map<String,dynamic> mapaEntidade)
@@ -21,7 +21,7 @@ class ListaCompra extends Entidade{
 
   Entidade criarEntidade(Map<String,dynamic> mapaEntidade){
     ListaCompra listaCompra= ListaCompra.criarDeMapa(mapaEntidade);
-    for (var item in _itens) {
+    for (var item in _itens.values) {
       listaCompra.incluirItem(item.criarCopia() as ItemListaCompra);
     }
     return listaCompra;
@@ -32,7 +32,7 @@ class ListaCompra extends Entidade{
   }
 
   List<ItemListaCompra> get itens{
-    return _itens;
+    return _itens.values.map((e) => e).toList();
   }
 
   void excluirItens() {
@@ -48,12 +48,14 @@ class ListaCompra extends Entidade{
   }
 
   void incluirProduto(Produto produto, double quantidade){
+    print("=======================numeroItem $_numeroItem");
     ItemListaCompra item = ItemListaCompra(
         numeroItem : _numeroItem,
         produto: produto,
         quantidade : quantidade,
         selecionado : false
     );
+    print("=======================numeroItem $_numeroItem");
     _itens[_numeroItem] = item;
     _numeroItem++;
   }
@@ -64,7 +66,8 @@ class ListaCompra extends Entidade{
 
   List<ItemListaCompra> retornarItensPorTipo(int idTipoProduto){
     List< ItemListaCompra > entidades = [];
-    _itens.forEach((item) {
+    print(entidades);
+    _itens.values.forEach((item) {
       if ((idTipoProduto == 0) ||
           (item.produto.idTipoProduto == idTipoProduto)){
         entidades.add(item);
@@ -76,9 +79,11 @@ class ListaCompra extends Entidade{
   List<Produto> retornarProdutosPorTipo(int idTipoProduto){
 
     List<Produto> entidades = [];
-    _itens.forEach((item) {
+    _itens.values.forEach((item) {
       if ((idTipoProduto == 0) ||
           (item.produto.idTipoProduto == idTipoProduto)){
+        Produto produto =  item.produto;
+        produto.quantidade =  item.quantidade;
         entidades.add(item.produto);
       }
     });

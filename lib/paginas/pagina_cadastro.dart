@@ -95,6 +95,7 @@ mixin PaginaCadastro{
 
   Widget criarLista(){
     if (controleCadastro == null) {
+      print("criarLista");
       return Container(
         child: const Text(
           'Controle não instanciado',
