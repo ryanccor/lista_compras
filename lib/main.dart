@@ -1,9 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lista_compras/paginas/navegacao.dart';
 import 'package:lista_compras/paginas/pagina_cadastro_produto.dart';
 import 'package:lista_compras/paginas/pagina_cadastro_tipo_produto.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(ListaCompras());
 }
 
