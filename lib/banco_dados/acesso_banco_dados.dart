@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dicionario_dados.dart';
@@ -91,9 +92,8 @@ class AcessoBancoDados{
     _bancoDados!.close();
   }
 
-  Future<Database> get bancoDados async {
-    _bancoDados ??= await _abrirBancoDados();
-
-    return _bancoDados!;
+  FirebaseDatabase get bancoDados {
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    return database;
   }
 }

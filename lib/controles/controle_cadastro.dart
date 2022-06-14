@@ -10,31 +10,23 @@ abstract class ControleCadastro {
 
   ControleCadastro(this.tabela, this.campoIdentificador);
 
-  Future<int> incluir(Entidade entidade) async {
-    final bancoDados = await AcessoBancoDados().bancoDados;
-
-    int resultado = await bancoDados!.insert(tabela, entidade.converterParaMapa());
-
-    return resultado;
+  Future<String?> incluir(Entidade entidade)  async {
+    final bancoDados = AcessoBancoDados().bancoDados;
+    String? id =  bancoDados.ref(tabela).push().key;
+    entidade.identificador = id ?? "";
+    await bancoDados.ref("$tabela/$id").set(entidade.converterParaMapa());
+    return id;
   }
 
-  Future<int> alterar(Entidade entidade) async {
-    final bancoDados = await AcessoBancoDados().bancoDados;
-    int resultado = await bancoDados!.update(
-        tabela,
-        entidade.converterParaMapa(),
-        where: '$campoIdentificador = ? ',
-        whereArgs: [entidade.identificador]);
-    return resultado;
+  Future alterar(Entidade entidade) async {
+    final bancoDados =  AcessoBancoDados().bancoDados;
+    await bancoDados.ref("$tabela/${entidade.identificador}").set(entidade.converterParaMapa());
   }
 
-  Future<int> excluir(int identificador) async{
+  Future excluir(String identificador) async{
     final bancoDados = await AcessoBancoDados().bancoDados;
-    int resultado = await bancoDados!.delete(
-        tabela,
-        where: '$campoIdentificador = ? ',
-        whereArgs: [identificador]);
-    return resultado;
+    await bancoDados.ref("$tabela/$identificador").remove();
+
   }
 
   Future<Entidade> criarEntidade(Map<String, dynamic> mapaEntidade);
@@ -42,13 +34,10 @@ abstract class ControleCadastro {
   Future<Entidade?> selecionar(int identificador) async {
     final bancoDados = await AcessoBancoDados().bancoDados;
 
-    List<Map<String,dynamic>> entidades =
-    await bancoDados.query(
-        tabela,
-        where: '$campoIdentificador = ? ',
-        whereArgs: [identificador]);
-    if (entidades.isNotEmpty){
-      return await criarEntidade(entidades.first);
+    var snapshot =
+    await bancoDados.ref("$tabela/$identificador").get();
+    if(snapshot.exists){
+      return criarEntidade(snapshot.value as Map<String, dynamic>);
     } else {
       return null;
     }
@@ -68,8 +57,8 @@ abstract class ControleCadastro {
   }
 
   Future<List<Entidade>> selecionarTodos () async {
-    Database? bancoDados = await AcessoBancoDados().bancoDados;
-    var resultado = await bancoDados.query(tabela);
+    var bancoDados = await AcessoBancoDados().bancoDados;
+    var resultado = await bancoDados.ref(tabela).get();
     List<Entidade> entidades = await criarListaEntidades(resultado);
     return entidades;
   }

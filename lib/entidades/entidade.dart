@@ -1,5 +1,5 @@
 abstract class Entidade{
-  int identificador = 0;
+  String identificador = "";
 
   Entidade(this.identificador);
 
