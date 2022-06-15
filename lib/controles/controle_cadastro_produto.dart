@@ -24,17 +24,26 @@ class ControleCadastroProduto extends ControleCadastro{
     produto.tipoProduto = tipoProduto;
     return produto;
   }
-  Future<List<Entidade>> selecionarPorTipo(int idTipoProduto) async {
+  Future<List<Entidade>> selecionarPorTipo(String idTipoProduto) async {
     final bancoDados = await AcessoBancoDados().bancoDados;
 
     List<Map> mapaEntidades;
-    if (idTipoProduto > 0){
-      mapaEntidades = await bancoDados.query(
-          tabela,
-          where: '${DicionarioDados.idTipoProduto} = ? ',
-          whereArgs: [idTipoProduto]);
+    if (idTipoProduto != ''){
+      var snapshot = await bancoDados.ref(tabela).equalTo(idTipoProduto, key:DicionarioDados.idTipoProduto).get();
+      if(snapshot.exists){
+        mapaEntidades = snapshot.value as List<Map>;
+      } else{
+        mapaEntidades = [];
+      }
+
+
     } else {
-      mapaEntidades = await bancoDados.query(tabela);
+      var snapshot = await bancoDados.ref(tabela).equalTo(idTipoProduto, key:DicionarioDados.idTipoProduto).get();
+      if(snapshot.exists){
+        mapaEntidades = snapshot.value as List<Map>;
+      } else{
+        mapaEntidades = [];
+      }
     }
     List<Entidade> entidades = await
     criarListaEntidades(mapaEntidades);

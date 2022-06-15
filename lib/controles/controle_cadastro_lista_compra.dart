@@ -47,24 +47,24 @@ class ControleCadastroListaCompra extends ControleCadastro {
   }
 
   @override
-  Future<String?> alterar(Entidade entidade) async {
+  Future<String> alterar(Entidade entidade) async {
     ListaCompra listaCompra = entidade as ListaCompra;
     String? resultado;
     resultado = await super.alterar(listaCompra);
     if (resultado != "") {
       resultado = await processarItens(listaCompra);
     }
-    return resultado;
+    return resultado ?? "";
   }
 
   @override
-  Future<String?> excluir(String identificador) async {
+  Future<String> excluir(String identificador) async {
     String? resultado;
     resultado = await super.excluir(identificador);
     if (resultado != "") {
       resultado =
           await controleCadastroItemLista.excluirDaListaCompra(identificador);
     }
-    return resultado;
+    return resultado ?? "";
   }
 } //Fim d

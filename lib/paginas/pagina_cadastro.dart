@@ -29,14 +29,14 @@ mixin PaginaCadastro{
     );
 
     if (confirmado) {
-      int resultado;
+      String? resultado;
 
       if (operacaoCadastro == OperacaoCadastro.inclusao) {
         resultado = await controleCadastro.incluir(entidade);
       } else {
         resultado = await controleCadastro.alterar(entidade);
       }
-      if (resultado > 0) {
+      if (resultado != '') {
         controleCadastro.emitirLista();
         mostrarBarraMensagem(context,
         operacaoCadastro == OperacaoCadastro.inclusao
@@ -84,8 +84,8 @@ mixin PaginaCadastro{
           return confirmado;
           },
         onDismissed: (direcao) async {
-          int resultado = await controleCadastro.excluir(entidades[indice].identificador);
-          if(resultado > 0) {
+          String resultado = await controleCadastro.excluir(entidades[indice].identificador);
+          if(resultado != '') {
             controleCadastro.emitirLista();
             mostrarBarraMensagem(context, 'Exclusão realizada com sucesso.');
           }

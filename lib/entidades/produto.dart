@@ -19,9 +19,10 @@ class Produto extends Entidade {
 
   Produto.criarDeMapa(Map<String,dynamic> mapaEntidade) :
         super.criarDeMapa(mapaEntidade){
+    print(mapaEntidade);
     identificador = mapaEntidade[DicionarioDados.idProduto];
     nome = mapaEntidade[DicionarioDados.nome];
-    quantidade = mapaEntidade[DicionarioDados.quantidade];
+    quantidade = mapaEntidade[DicionarioDados.quantidade] * 1.0;
     idTipoProduto = mapaEntidade[DicionarioDados.idTipoProduto];
     unidade = mapaEntidade[DicionarioDados.unidade];
   }

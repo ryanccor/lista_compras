@@ -4,7 +4,7 @@ import 'package:lista_compras/entidades/entidade.dart';
 class TipoProduto extends Entidade {
   String nome = '';
 
-  TipoProduto({int idTipoProduto = 0,
+  TipoProduto({String idTipoProduto = "",
     this.nome = ''
   }):super(idTipoProduto);
 
@@ -26,7 +26,7 @@ class TipoProduto extends Entidade {
       DicionarioDados.nome : nome,
     };
     //Se identificador é maior que zero, trata-se de alteração!
-    if (identificador > 0){
+    if (identificador != ""){
       valores.addAll({DicionarioDados.idTipoProduto :
       identificador});
     }

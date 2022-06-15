@@ -32,7 +32,7 @@ class _PaginaListaCompraState extends State<PaginaListaCompra>
     if (widget.operacaoCadastro == OperacaoCadastro.edicao) {
       _controladorNome.text = (widget.entidade as ListaCompra).nome;
 
-      selecionarProdutos(0);
+      selecionarProdutos("");
     }
   }
 
@@ -116,7 +116,7 @@ class _PaginaListaCompraState extends State<PaginaListaCompra>
                       operacaoCadastro: OperacaoCadastro.selecao,
                     );
                   })).then((value) => setState(() {
-                        selecionarProdutos(0);
+                        selecionarProdutos("");
                       }));
                 },
                 child: Icon(Icons.add))

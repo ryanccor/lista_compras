@@ -119,7 +119,7 @@ class _PaginaProdutoState extends State<PaginaProduto>
         hint: Text('Tipo do produto'),
         items: _itensTipoProduto,
         value:
-            produto.tipoProduto.identificador > 0 ? produto.tipoProduto : null,
+            produto.tipoProduto.identificador != '' ? produto.tipoProduto : null,
         onChanged: (tipoProduto) {
           //É necessário ter o onChanged para funcionar.
           setState(() {

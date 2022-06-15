@@ -4,7 +4,7 @@ import 'package:lista_compras/banco_dados/dicionario_dados.dart';
 
 class ItemListaCompra extends Entidade {
   int numeroItem = 0;
-  int idProduto = '';
+  String idProduto = '';
   Produto _produto = Produto();
   double quantidade = 0.0;
   bool selecionado = false;
@@ -16,7 +16,7 @@ class ItemListaCompra extends Entidade {
     idProduto = produto.identificador;
   }
 
-  ItemListaCompra({int idListaCompra = 0,
+  ItemListaCompra({String idListaCompra ="",
     required this.numeroItem,
     required Produto produto,
     required this.quantidade,

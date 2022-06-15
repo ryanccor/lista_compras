@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:ffi';
 import 'package:sqflite/sqflite.dart';
 import 'package:lista_compras/banco_dados/acesso_banco_dados.dart';
 import 'package:lista_compras/entidades/entidade.dart';
@@ -18,26 +20,29 @@ abstract class ControleCadastro {
     return id;
   }
 
-  Future alterar(Entidade entidade) async {
+  Future<String> alterar(Entidade entidade) async {
     final bancoDados =  AcessoBancoDados().bancoDados;
     await bancoDados.ref("$tabela/${entidade.identificador}").set(entidade.converterParaMapa());
+    return entidade.identificador;
   }
 
-  Future excluir(String identificador) async{
+  Future<String> excluir(String identificador) async{
     final bancoDados = await AcessoBancoDados().bancoDados;
     await bancoDados.ref("$tabela/$identificador").remove();
-
+    return identificador;
   }
 
   Future<Entidade> criarEntidade(Map<String, dynamic> mapaEntidade);
 
-  Future<Entidade?> selecionar(int identificador) async {
+  Future<Entidade?> selecionar(String identificador) async {
     final bancoDados = await AcessoBancoDados().bancoDados;
 
     var snapshot =
     await bancoDados.ref("$tabela/$identificador").get();
     if(snapshot.exists){
-      return criarEntidade(snapshot.value as Map<String, dynamic>);
+      var strJson = json.encode(snapshot.value);
+      Map<String, dynamic> entityMap = json.decode(strJson);
+      return criarEntidade(entityMap);
     } else {
       return null;
     }
@@ -46,8 +51,11 @@ abstract class ControleCadastro {
   Future<List<Entidade>> criarListaEntidades (resultado) async {
     List<Entidade> entidades = <Entidade>[];
     if (resultado.isNotEmpty){
-      for (int i = 0; i < resultado.length; i++){
-        Entidade entidade = await criarEntidade(resultado[i]);
+      for (var i in resultado.values){
+        print(i);
+        var strJson = json.encode(i);
+        Map<String, dynamic> entityMap = json.decode(strJson);
+        Entidade entidade = await criarEntidade(entityMap);
         entidades.add(entidade);
       }
       return entidades;
@@ -59,8 +67,10 @@ abstract class ControleCadastro {
   Future<List<Entidade>> selecionarTodos () async {
     var bancoDados = await AcessoBancoDados().bancoDados;
     var resultado = await bancoDados.ref(tabela).get();
-    List<Entidade> entidades = await criarListaEntidades(resultado);
-    return entidades;
+    if(resultado.exists) {
+      return await criarListaEntidades(resultado.value);
+    }
+    return [];
   }
 
   final StreamController<List<Entidade>> _controladorFluxoEntidades = StreamController<List<Entidade>>();

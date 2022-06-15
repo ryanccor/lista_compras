@@ -60,7 +60,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal>
 
   @override
   Entidade criarEntidade(){
-    return ListaCompra(idCompra: 0,
+    return ListaCompra(idCompra: "",
         nome: '');
   }
 

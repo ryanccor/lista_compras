@@ -9,7 +9,7 @@ class ListaCompra extends Entidade{
   String nome = '';
   //Facilita a localização de um item
   final Map<int, ItemListaCompra> _itens = {};
-  ListaCompra({int idCompra = 0,
+  ListaCompra({String idCompra = "",
     this.nome = ''}) : super(idCompra);
   ListaCompra.criarDeMapa(Map<String,dynamic> mapaEntidade)
       : super.criarDeMapa(mapaEntidade){
@@ -76,11 +76,11 @@ class ListaCompra extends Entidade{
     return entidades;
   }
 
-  List<Produto> retornarProdutosPorTipo(int idTipoProduto){
+  List<Produto> retornarProdutosPorTipo(String idTipoProduto){
 
     List<Produto> entidades = [];
     _itens.values.forEach((item) {
-      if ((idTipoProduto == 0) ||
+      if ((idTipoProduto == "") ||
           (item.produto.idTipoProduto == idTipoProduto)){
         Produto produto =  item.produto;
         produto.quantidade =  item.quantidade;
@@ -98,7 +98,7 @@ class ListaCompra extends Entidade{
       DicionarioDados.nome : nome,
     };
     //Se identificador é maior que zero, é alteração!
-    if (identificador > 0){
+    if (identificador != ""){
       valores.addAll({DicionarioDados.idListaCompra :
       identificador});
     }

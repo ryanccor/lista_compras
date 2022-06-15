@@ -15,7 +15,7 @@ mixin ListaProdutos {
   ControleCadastroProduto controleCadastroProduto = ControleCadastroProduto();
   late State estadoPagina;
 
-  void selecionarProdutos(int idTipoProduto) async {
+  void selecionarProdutos(String idTipoProduto) async {
     produtos = await controleCadastroProduto.selecionarPorTipo(idTipoProduto);
     estadoPagina.setState(() {});
   }
@@ -49,7 +49,7 @@ mixin ListaProdutos {
             }
             tiposProdutos = convertidos;
             if (incluiOpcaoTodos) {
-              tiposProdutos.add(TipoProduto(idTipoProduto: 0, nome: 'Todos'));
+              tiposProdutos.add(TipoProduto(idTipoProduto: "", nome: 'Todos'));
             }
             return ListView.builder(
                 padding: EdgeInsets.all(5.0),
