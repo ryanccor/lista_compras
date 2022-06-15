@@ -9,30 +9,25 @@ import '../entidades/entidade.dart';
 import '../entidades/lista_compra.dart';
 import 'lista_produtos.dart';
 
-class PaginaListaCompra extends StatefulWidget
-    with PaginaEntidade{
+class PaginaListaCompra extends StatefulWidget with PaginaEntidade {
   @override
-  _PaginaListaCompraState createState() =>
-      _PaginaListaCompraState();
-  PaginaListaCompra({@required operacaoCadastro, entidade}){
+  _PaginaListaCompraState createState() => _PaginaListaCompraState();
+  PaginaListaCompra({@required operacaoCadastro, entidade}) {
     this.operacaoCadastro = operacaoCadastro;
     this.entidade = entidade;
   }
 }
 
-
-
 class _PaginaListaCompraState extends State<PaginaListaCompra>
     with EstadoPaginaEntidade, ListaProdutos {
-
   final _controladorNome = TextEditingController();
-  final _controleItemLista =  ControleCadastroItemListaCompra();
+  final _controleItemLista = ControleCadastroItemListaCompra();
   List<Entidade> _itens = <Entidade>[];
 
   @override
   void initState() {
     super.initState();
-    estadoPagina = this;//Por causa do setState
+    estadoPagina = this; //Por causa do setState
     controleCadastroTipoProduto.emitirLista();
     if (widget.operacaoCadastro == OperacaoCadastro.edicao) {
       _controladorNome.text = (widget.entidade as ListaCompra).nome;
@@ -42,22 +37,22 @@ class _PaginaListaCompraState extends State<PaginaListaCompra>
   }
 
   @override
-  void dispose(){
+  void dispose() {
     controleCadastroTipoProduto.finalizar();
     controleCadastroProduto.finalizar();
-   _controleItemLista.finalizar();
+    _controleItemLista.finalizar();
     _controladorNome.dispose();
     super.dispose();
   }
 
   @override
-  bool dadosCorretos(BuildContext contexto){
+  bool dadosCorretos(BuildContext contexto) {
     ListaCompra listaCompra = widget.entidade as ListaCompra;
-    if ((listaCompra.nome == null) || (listaCompra.nome == '')){
+    if ((listaCompra.nome == null) || (listaCompra.nome == '')) {
       informar(contexto, 'É necessário informar o nome da lista.');
       return false;
     }
-    if (!listaCompra.temItens()){
+    if (!listaCompra.temItens()) {
       informar(contexto, 'É necessário incluir produtos na lista.');
       return false;
     }
@@ -65,35 +60,32 @@ class _PaginaListaCompraState extends State<PaginaListaCompra>
   }
 
   @override
-  void transferirDadosParaEntidade(){
+  void transferirDadosParaEntidade() {
     ListaCompra listaCompra = widget.entidade as ListaCompra;
     listaCompra.nome = _controladorNome.text;
-    for(ItemListaCompra  item in  listaCompra.itens){
-      item.quantidade =  item.produto.quantidade;
+    for (ItemListaCompra item in listaCompra.itens) {
+      item.quantidade = item.produto.quantidade;
     }
     // Os itens foram inseridos a partir da página de
     // seleção de produtos.
   }
 
   @override
-  void selecionarProdutos(int idTipoProduto) async {
-
+  void selecionarProdutos(String idTipoProduto) async {
     ListaCompra listaCompra = widget.entidade as ListaCompra;
-    print("selecionando produtos da lista ${listaCompra.identificador }");
+    print("selecionando produtos da lista ${listaCompra.identificador}");
     print("lista vazia ${listaCompra.itens.isEmpty}");
     print("itens: ${listaCompra.itens}");
-    if(listaCompra.identificador > 0){
-      List<Entidade> itens = await _controleItemLista.selecionarDaListaCompra(listaCompra.identificador);
-      for(Entidade item in itens) {
+    if (listaCompra.identificador != "") {
+      List<Entidade> itens = await _controleItemLista
+          .selecionarDaListaCompra(listaCompra.identificador);
+      for (Entidade item in itens) {
         listaCompra.incluirItem(item as ItemListaCompra);
       }
     }
-    produtos =
-        listaCompra.retornarProdutosPorTipo(idTipoProduto);
-    estadoPagina.setState(() {
-    });
+    produtos = listaCompra.retornarProdutosPorTipo(idTipoProduto);
+    estadoPagina.setState(() {});
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -101,32 +93,36 @@ class _PaginaListaCompraState extends State<PaginaListaCompra>
   }
 
   @override
-  List<Widget> criarConteudoFormulario(BuildContext
-  contexto){
-    return [TextField(
-      controller: _controladorNome,
-      decoration: const InputDecoration(
-        labelText: 'Nome',
+  List<Widget> criarConteudoFormulario(BuildContext contexto) {
+    return [
+      TextField(
+        controller: _controladorNome,
+        decoration: const InputDecoration(
+          labelText: 'Nome',
+        ),
       ),
-    ),
       Container(
         color: Colors.grey,
         margin: EdgeInsets.fromLTRB(0, 16, 0, 16),
         child: Column(
-
           children: [
             Container(height: 50, child: criarListaTiposProdutos(true)),
             Container(child: criarListaProdutos()),
-            ElevatedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context){
-                return PaginaSelecaoProdutos(entidade: widget.entidade, operacaoCadastro: OperacaoCadastro.selecao,);
-              })).then((value) => setState(() {selecionarProdutos(0);}));
-            }, child: Icon(Icons.add))
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return PaginaSelecaoProdutos(
+                      entidade: widget.entidade,
+                      operacaoCadastro: OperacaoCadastro.selecao,
+                    );
+                  })).then((value) => setState(() {
+                        selecionarProdutos(0);
+                      }));
+                },
+                child: Icon(Icons.add))
           ],
         ),
       ),
-
     ];
   }
 }
-
