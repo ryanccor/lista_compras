@@ -10,9 +10,9 @@ class Produto extends Entidade {
   String nome = '';
   double quantidade = 0.0;
   String unidade = '';
-  int idTipoProduto = 0;
+  String idTipoProduto = '';
 
-  Produto({int idProduto = 0,
+  Produto({String idProduto = '',
     this.nome = '',
     this.quantidade = 0.0,
   }) : super(idProduto);
@@ -48,7 +48,7 @@ class Produto extends Entidade {
       DicionarioDados.unidade : unidade,
     };
     //Se identificador é maior que zero, é uma alteração!
-    if (identificador > 0){
+    if (identificador != ''){
       valores.addAll({DicionarioDados.idProduto :
       identificador});
     }

@@ -15,34 +15,35 @@ class ControleCadastroItemListaCompra extends ControleCadastro{
 
   @override
   Future<Entidade> criarEntidade(Map<String, dynamic> mapaEntidade)
+
   async {
-    ItemListaCompra itemListaCompra =
-    ItemListaCompra.criarDeMapa(mapaEntidade);
-    Produto produto = await
-    controleCadastroProduto.selecionar(
-        itemListaCompra.idProduto) as Produto;
+    ItemListaCompra itemListaCompra = ItemListaCompra.criarDeMapa(mapaEntidade);
+    Produto produto = await controleCadastroProduto.selecionar(itemListaCompra.idProduto) as Produto;
+
     itemListaCompra.produto = produto;
     return itemListaCompra;
   }
 
-  Future<List<Entidade>> selecionarDaListaCompra(int idListaCompra)
+  Future<List<Entidade>> selecionarDaListaCompra(String idListaCompra)
   async {
     final bancoDados = await AcessoBancoDados().bancoDados;
-    List<Map> mapaEntidades = await bancoDados.query(
-        tabela,
-        where: '${DicionarioDados.idListaCompra} = ? ',
-        whereArgs: [idListaCompra], );
-    List<Entidade> entidades = await
-    criarListaEntidades(mapaEntidades);
-    return entidades;
+    var snapshot = await bancoDados.ref('$tabela').equalTo(idListaCompra, key: DicionarioDados.idListaCompra).get();
+    if (snapshot.exists){
+      var mapaEntidades = snapshot.value;
+      List<Entidade> entidades = await criarListaEntidades(mapaEntidades);
+      return entidades;
+    }
+    return [];
   }
 
-  Future<int> excluirDaListaCompra(int idListaCompra) async {
+  Future<String> excluirDaListaCompra(String idListaCompra) async {
     final bancoDados = await AcessoBancoDados().bancoDados;
-    int resultado = await bancoDados.delete(
-        tabela,
-        where: '${DicionarioDados.idListaCompra} = ? ',
-        whereArgs: [idListaCompra]);
-    return resultado;
+    var snapshot = await bancoDados.ref(tabela).equalTo(idListaCompra, key: DicionarioDados.idListaCompra).get();
+    if (snapshot.exists) {
+      for (var i in snapshot.children){
+        i.ref.remove();
+      }
+    }
+    return idListaCompra;
   }
 }
